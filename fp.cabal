@@ -1,0 +1,49 @@
+cabal-version:      2.4
+name:               fp
+version:            0.1.0.0
+synopsis:
+
+-- A longer description of the package.
+-- description:
+homepage:
+
+-- A URL where users can report bugs.
+-- bug-reports:
+license:            BSD-3-Clause
+license-file:       LICENSE
+author:             Vít Šefl
+maintainer:         vituscze@gmail.com
+
+-- A copyright notice.
+-- copyright:
+-- category:
+extra-source-files: CHANGELOG.md
+
+library
+    exposed-modules:  Expr,
+                      Subst,
+                      Reduce,
+                      Parse,
+                      Common,
+                      Encoding,
+                      Church,
+                      Scott
+
+    -- Modules included in this library but not exported.
+    -- other-modules:
+
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    build-depends:    base ^>=4.14.1.0,
+                      parsec ^>= 3.1,
+                      mtl ^>= 2.2,
+                      containers ^>= 0.6
+    hs-source-dirs:   src
+    ghc-options:      -Wall
+    default-language: Haskell2010
+
+    default-extensions: FlexibleContexts,
+                        RankNTypes,
+                        ConstraintKinds,
+                        ImportQualifiedPost,
+                        OverloadedStrings
