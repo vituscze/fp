@@ -50,7 +50,7 @@ turingStep = "trans input" |-> "input" :. ("state tape" |-> "trans" :. "state" :
     handle = "sym dir new" |-> pair :. "new" :. ("dir" :. moveLeft :. moveRight :. (writeTape :. "sym" :. "tape"))
 
 turing :: Expr
-turing = "end trans" |-> y :. ("rec input" |-> "end" :. (fst' :. "input") :. "input" :. ("rec" :. (turingStep :. "trans" :. "input"))) :. (pair :. nat 0 :. initial)
+turing = "init end trans" |-> y :. ("rec input" |-> "end" :. (fst' :. "input") :. "input" :. ("rec" :. (turingStep :. "trans" :. "input"))) :. "init"
 
 busyBeaverTrans :: Expr
 busyBeaverTrans = "state sym" |-> "state" :. ("s" |-> "s" :. id' :. state1) :. state0
