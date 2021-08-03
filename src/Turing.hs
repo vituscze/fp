@@ -1,8 +1,7 @@
 module Turing
     (
     -- * Turing machines
-      initial
-    , toTape
+      toTape
     , moveLeft
     , moveRight
     , writeTape
@@ -11,6 +10,7 @@ module Turing
     , turing
 
     -- * 2-state busy beaver
+    , busyBeaverInitial
     , busyBeaverEnd
     , busyBeaverTrans
     ) where
@@ -19,9 +19,6 @@ import Common
 import Encoding
 import Expr
 import Scott
-
-initial :: Expr
-initial = triple :. nil :. nat 0 :. nil
 
 toTape :: Expr -> Maybe ([Int], Int, [Int])
 toTape = toTriple (toList toInt) toInt (toList toInt)
@@ -52,8 +49,11 @@ turingStep = "trans input" |-> "input" :. ("state tape" |-> "trans" :. "state" :
 turing :: Expr
 turing = "init end trans" |-> y :. ("rec input" |-> "end" :. (fst' :. "input") :. "input" :. ("rec" :. (turingStep :. "trans" :. "input"))) :. "init"
 
+busyBeaverInitial :: Expr
+busyBeaverInitial = pair :. nat 0 :. (triple :. nil :. nat 0 :. nil)
+
 busyBeaverTrans :: Expr
-busyBeaverTrans = "state sym" |-> "state" :. ("s" |-> "s" :. id' :. state1) :. state0
+busyBeaverTrans = "state sym" |-> "state" :. (k :. state1) :. state0
   where
     state0 = "sym" :. ("s" |-> triple :. nat 1 :.  true :. nat 1) :. (triple :. nat 1 :. false :. nat 1)
     state1 = "sym" :. ("s" |-> triple :. nat 1 :. false :. nat 2) :. (triple :. nat 1 :.  true :. nat 0)
