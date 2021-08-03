@@ -39,13 +39,17 @@ free (x :-> e)  = free e `Set.difference` Set.singleton x
 free (e1 :. e2) = free e1 `Set.union` free e2
 
 subst :: (Fresh m) => Name -> Expr -> Expr -> m Expr
-subst x e (Var y)
-    | x == y    = pure e
-    | otherwise = pure $ Var y
-subst x e (y :-> f)
-    | x == y                = pure $ y :-> f
-    | y `Set.member` free e = do
-        (y', f') <- rename y f
-        (y' :->) <$> subst x e f'
-    | otherwise             = (y :->) <$> subst x e f
-subst x e (f1 :. f2) = (:.) <$> subst x e f1 <*> subst x e f2
+subst x e = go
+  where
+    fv = free e
+
+    go (Var y)
+        | x == y    = pure e
+        | otherwise = pure $ Var y
+    go (y :-> f)
+        | x == y            = pure $ y :-> f
+        | y `Set.member` fv = do
+            (y', f') <- rename y f
+            (y' :->) <$> go f'
+        | otherwise         = (y :->) <$> go f
+    go (f1 :. f2) = (:.) <$> go f1 <*> go f2
