@@ -28,7 +28,8 @@ library
                       Encoding,
                       Church,
                       Scott,
-                      Turing
+                      Turing,
+                      Nameless
 
     -- Modules included in this library but not exported.
     -- other-modules:
