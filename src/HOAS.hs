@@ -11,6 +11,8 @@ import Data.Map qualified as Map
 import Expr qualified as N
 import Expr (Name)
 
+infixl 9 :.
+
 data Expr
     = FV Name
     | Lam (Expr -> Expr)

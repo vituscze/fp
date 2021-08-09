@@ -14,6 +14,8 @@ import Data.Map ((!))
 import Expr qualified as N
 import Expr (Name)
 
+infixl 9 :.
+
 data Expr
     = BV !Int
     | FV Name
