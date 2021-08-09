@@ -39,9 +39,16 @@ toNamed = (`evalState` names) . go
         (v N.:->) <$> go (e (FV v))
     go (e1 :. e2) = (N.:.) <$> go e1 <*> go e2
 
+whnf :: Expr -> Expr
+whnf (FV x)     = FV x
+whnf (Lam e)    = Lam e
+whnf (e1 :. e2) = case whnf e1 of
+    Lam e -> whnf $ e e2
+    e1'   -> e1' :. e2
+
 normalForm :: Expr -> Expr
 normalForm (FV x)     = FV x
 normalForm (Lam e)    = Lam (normalForm . e)
-normalForm (e1 :. e2) = case normalForm e1 of
+normalForm (e1 :. e2) = case whnf e1 of
     Lam e -> normalForm $ e e2
-    e1'   -> e1' :. normalForm e2
+    e1'   -> normalForm e1' :. normalForm e2
