@@ -11,7 +11,7 @@ import Control.Monad.State
 import Data.Map qualified as Map
 import Data.Map ((!))
 
-import Expr qualified as Named
+import Expr qualified as N
 import Expr (Name)
 
 data Expr
@@ -21,27 +21,27 @@ data Expr
     | Expr :. Expr
     deriving (Show)
 
-fromNamed :: Named.Expr -> Expr
+fromNamed :: N.Expr -> Expr
 fromNamed = go 0 Map.empty
   where
-    go d m (Named.Var v)    = case Map.lookup v m of
+    go d m (N.Var v)    = case Map.lookup v m of
         Just i  -> BV (d - i)
         Nothing -> FV v
-    go d m (x Named.:-> e)  = Lam $ go (d + 1) (Map.insert x (d + 1) m) e
-    go d m (e1 Named.:. e2) = go d m e1 :. go d m e2
+    go d m (x N.:-> e)  = Lam $ go (d + 1) (Map.insert x (d + 1) m) e
+    go d m (e1 N.:. e2) = go d m e1 :. go d m e2
 
-toNamed :: Expr -> Named.Expr
+toNamed :: Expr -> N.Expr
 toNamed = (`evalState` names) . go 0 Map.empty
   where
     names = map ("_" ++) $ concatMap (`replicateM` ['a' .. 'z']) [1 ..]
 
-    go d m (BV i) = pure $ Named.Var $ m ! (d - i)
-    go _ _ (FV x) = pure $ Named.Var x
+    go d m (BV i) = pure $ N.Var $ m ! (d - i)
+    go _ _ (FV x) = pure $ N.Var x
     go d m (Lam e) = do
         ~(v:vs) <- get
         put vs
-        (v Named.:->) <$> go (d + 1) (Map.insert (d + 1) v m) e
-    go d m (e1 :. e2) = (Named.:.) <$> go d m e1 <*> go d m e2
+        (v N.:->) <$> go (d + 1) (Map.insert (d + 1) v m) e
+    go d m (e1 :. e2) = (N.:.) <$> go d m e1 <*> go d m e2
 
 -- | @shift c e@ shifts all variables in the expression @e@ above the cutoff @c@ by one.
 shift :: Int -> Expr -> Expr
