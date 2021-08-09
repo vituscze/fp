@@ -29,7 +29,8 @@ library
                       Church,
                       Scott,
                       Turing,
-                      Nameless
+                      Nameless,
+                      HOAS
 
     -- Modules included in this library but not exported.
     -- other-modules:
