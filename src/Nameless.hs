@@ -56,7 +56,7 @@ fromNamed = go 0 Map.empty
 toNamed :: Expr -> N.Expr
 toNamed = (`evalState` names) . go 0 Map.empty
   where
-    names = map ("_" ++) $ concatMap (`replicateM` ['a' .. 'z']) [1 ..]
+    names = map ("`" ++) $ concatMap (`replicateM` ['a' .. 'z']) [1 ..]
 
     go d m (BV i) = pure $ N.Var $ m ! (d - i)
     go _ _ (FV x) = pure $ N.Var x
