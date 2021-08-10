@@ -1,11 +1,17 @@
 module Subst
     ( Fresh
+    , toFresh
+    , fromFresh
+    , fresh
+    , freshest
     , rename
     , free
     , subst
     ) where
 
 import Control.Monad.State
+import Data.List qualified as List
+import Data.Maybe qualified as Maybe
 import Data.Set qualified as Set
 import Data.Set (Set)
 
@@ -13,8 +19,27 @@ import Expr
 
 type Fresh m = (MonadState Int m)
 
+toFresh :: Int -> String
+toFresh = ('`' :) . reverse . go
+  where
+    go n | n <= 0 = ""
+         | otherwise = let r = ((n - 1) `mod` 26) + 1
+                       in  toEnum (0x60 + r):go ((n - r) `div` 26)
+
+fromFresh :: String -> Int
+fromFresh ('`':r) = List.foldl' (\a n -> n + 26 * a) 0 $ map (subtract 0x60 . fromEnum) r
+fromFresh _       = 0
+
 fresh :: (Fresh m) => m Name
-fresh = state $ \s -> ("f" ++ show s, s + 1)
+fresh = state $ \s -> (toFresh s, s + 1)
+
+-- | Find the most recent fresh variable.
+freshest :: Expr -> Int
+freshest = Maybe.fromMaybe 0 . Set.lookupMax . Set.map fromFresh . go
+  where
+    go (Var v)    = Set.singleton v
+    go (x :-> e)  = go e `Set.union` Set.singleton x
+    go (e1 :. e2) = go e1 `Set.union` go e2
 
 -- | The caller must ensure no free variables are captured.
 renameUnsafe :: Name -> Name -> Expr -> Expr

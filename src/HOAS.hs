@@ -10,6 +10,7 @@ import Data.Map qualified as Map
 
 import Expr qualified as N
 import Expr (Name)
+import Subst qualified as S
 
 infixl 9 :.
 
@@ -33,14 +34,11 @@ fromNamed = go Map.empty
     go m (e1 N.:. e2) = go m e1 :. go m e2
 
 toNamed :: Expr -> N.Expr
-toNamed = (`evalState` names) . go
+toNamed = (`evalState` 1) . go
   where
-    names = map ("`" ++) $ concatMap (`replicateM` ['a' .. 'z']) [1 ..]
-
     go (FV x)     = pure $ N.Var x
     go (Lam e)    = do
-        ~(v:vs) <- get
-        put vs
+        v <- S.fresh
         (v N.:->) <$> go (e (FV v))
     go (e1 :. e2) = (N.:.) <$> go e1 <*> go e2
 

@@ -15,8 +15,8 @@ import Subst
 
 type Reduction m = (Alternative m, Fresh m)
 
-runReduction :: (forall m. (Reduction m) => m a) -> Maybe a
-runReduction r = fst <$> runStateT r 0
+runReduction :: (forall m. (Reduction m) => Expr -> m Expr) -> Expr -> Maybe Expr
+runReduction r e = fst <$> runStateT (r e) (freshest e + 1)
 
 pass :: (Reduction m) => (Expr -> m Expr) -> Expr -> m Expr
 pass _ (Var _)    = empty
@@ -38,7 +38,7 @@ steps step n = foldr (>=>) pure $ replicate n step
 
 -- | Might not terminate.
 normalForm :: Expr -> Expr
-normalForm expr = case runReduction (go expr) of
+normalForm expr = case runReduction go expr of
     Just nf -> nf
     _       -> error "normalForm: internal error"
   where
