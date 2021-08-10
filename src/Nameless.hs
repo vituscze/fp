@@ -7,6 +7,7 @@ module Nameless
     , normalForm
     ) where
 
+import Control.DeepSeq
 import Control.Monad.State
 import Data.Map qualified as Map
 import Data.Map ((!))
@@ -22,6 +23,12 @@ data Expr
     | Lam Expr
     | Expr :. Expr
     deriving (Show)
+
+instance NFData Expr where
+    rnf (BV i)     = rnf i
+    rnf (FV x)     = rnf x
+    rnf (Lam e)    = rnf e
+    rnf (e1 :. e2) = rnf e1 `seq` rnf e2
 
 fromNamed :: N.Expr -> Expr
 fromNamed = go 0 Map.empty

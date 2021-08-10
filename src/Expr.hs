@@ -4,6 +4,7 @@ module Expr
     , (|->)
     ) where
 
+import Control.DeepSeq
 import qualified Data.List as List
 import Data.String
 
@@ -17,6 +18,11 @@ data Expr
     = Var Name       -- ^ Variable
     | Name :-> Expr  -- ^ Abstraction
     | Expr :. Expr   -- ^ Application
+
+instance NFData Expr where
+    rnf (Var x)    = rnf x
+    rnf (x :-> e)  = rnf x `seq` rnf e
+    rnf (e1 :. e2) = rnf e1 `seq` rnf e2
 
 (|->) :: String -> Expr -> Expr
 s |-> e = foldr (:->) e $ words s

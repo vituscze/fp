@@ -5,6 +5,7 @@ module SKI
     , normalForm
     ) where
 
+import Control.DeepSeq
 import Data.Set qualified as Set
 
 import Common (s, k, id')
@@ -21,6 +22,13 @@ data Expr
     | I
     | Expr :. Expr
     deriving (Show)
+
+instance NFData Expr where
+    rnf (FV x)     = rnf x
+    rnf S          = ()
+    rnf K          = ()
+    rnf I          = ()
+    rnf (e1 :. e2) = rnf e1 `seq` rnf e2
 
 fromNamed :: N.Expr -> Expr
 fromNamed = go

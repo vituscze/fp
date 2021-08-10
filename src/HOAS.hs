@@ -18,6 +18,8 @@ data Expr
     | Lam (Expr -> Expr)
     | Expr :. Expr
 
+-- No NFData instance since we cannot reduce under the binder.
+
 fromNamed :: N.Expr -> Expr
 fromNamed = go Map.empty
   where
