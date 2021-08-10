@@ -1,23 +1,17 @@
 module Turing
-    (
-    -- * Turing machines
-      toTape
+    ( toTape
     , moveLeft
     , moveRight
     , writeTape
     , readTape
     , turingStep
     , turing
-
-    -- * 2-state busy beaver
-    , busyBeaverInitial
-    , busyBeaverEnd
-    , busyBeaverTrans
     ) where
 
 import Common
 import Encoding
 import Expr
+import Reduce
 import Scott
 
 toTape :: Expr -> Maybe ([Int], Int, [Int])
@@ -47,16 +41,4 @@ turingStep = "trans input" |-> "input" :. ("state tape" |-> "trans" :. "state" :
     handle = "sym dir new" |-> pair :. "new" :. ("dir" :. moveLeft :. moveRight :. (writeTape :. "sym" :. "tape"))
 
 turing :: Expr
-turing = "init end trans" |-> y :. ("rec input" |-> "end" :. (fst' :. "input") :. "input" :. ("rec" :. (turingStep :. "trans" :. "input"))) :. "init"
-
-busyBeaverInitial :: Expr
-busyBeaverInitial = pair :. nat 0 :. (triple :. nil :. nat 0 :. nil)
-
-busyBeaverTrans :: Expr
-busyBeaverTrans = "state sym" |-> "state" :. (k :. state1) :. state0
-  where
-    state0 = "sym" :. ("s" |-> triple :. nat 1 :.  true :. nat 1) :. (triple :. nat 1 :. false :. nat 1)
-    state1 = "sym" :. ("s" |-> triple :. nat 1 :. false :. nat 2) :. (triple :. nat 1 :.  true :. nat 0)
-
-busyBeaverEnd :: Expr
-busyBeaverEnd = "state" |-> "state" :. ("s" |-> "s" :. (k :. true) :. false) :. false
+turing = "init end trans" |-> y :. normalForm ("rec input" |-> "end" :. (fst' :. "input") :. "input" :. ("rec" :. (turingStep :. "trans" :. "input"))) :. "init"

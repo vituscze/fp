@@ -29,6 +29,8 @@ library
                       Church,
                       Scott,
                       Turing,
+                      Turing.BusyBeaver2,
+                      Turing.BusyBeaver3,
                       Nameless,
                       HOAS,
                       SKI
