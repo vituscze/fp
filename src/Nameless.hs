@@ -22,13 +22,27 @@ data Expr
     | FV Name
     | Lam Expr
     | Expr :. Expr
-    deriving (Show)
 
 instance NFData Expr where
     rnf (BV i)     = rnf i
     rnf (FV x)     = rnf x
     rnf (Lam e)    = rnf e
     rnf (e1 :. e2) = rnf e1 `seq` rnf e2
+
+instance Show Expr where
+    showsPrec = go
+      where
+        go _ (BV i)     = (show i ++)
+        go _ (FV x)     = (x ++)
+        go p (Lam e)    = showParen (p > 0)
+            ( ("λ " ++)
+            . go 0 e
+            )
+        go p (e1 :. e2) = showParen (p > 10)
+            ( go 10 e1
+            . (" " ++)
+            . go 11 e2
+            )
 
 fromNamed :: N.Expr -> Expr
 fromNamed = go 0 Map.empty

@@ -21,7 +21,6 @@ data Expr
     | K
     | I
     | Expr :. Expr
-    deriving (Show)
 
 instance NFData Expr where
     rnf (FV x)     = rnf x
@@ -29,6 +28,19 @@ instance NFData Expr where
     rnf K          = ()
     rnf I          = ()
     rnf (e1 :. e2) = rnf e1 `seq` rnf e2
+
+instance Show Expr where
+    showsPrec = go
+      where
+        go _ (FV x)     = (x ++)
+        go _ S          = ("S" ++)
+        go _ K          = ("K" ++)
+        go _ I          = ("I" ++)
+        go p (e1 :. e2) = showParen (p > 10)
+            ( go 10 e1
+            . (" " ++)
+            . go 11 e2
+            )
 
 fromNamed :: N.Expr -> Expr
 fromNamed = go

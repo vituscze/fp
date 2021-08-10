@@ -20,6 +20,9 @@ data Expr
 
 -- No NFData instance since we cannot reduce under the binder.
 
+instance Show Expr where
+    showsPrec p = showsPrec p . toNamed
+
 fromNamed :: N.Expr -> Expr
 fromNamed = go Map.empty
   where
@@ -32,7 +35,7 @@ fromNamed = go Map.empty
 toNamed :: Expr -> N.Expr
 toNamed = (`evalState` names) . go
   where
-    names = map ("_" ++) $ concatMap (`replicateM` ['a' .. 'z']) [1 ..]
+    names = map ("`" ++) $ concatMap (`replicateM` ['a' .. 'z']) [1 ..]
 
     go (FV x)     = pure $ N.Var x
     go (Lam e)    = do
