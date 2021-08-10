@@ -22,7 +22,7 @@ type Fresh m = (MonadState Int m)
 toFresh :: Int -> String
 toFresh = ('`' :) . reverse . go
   where
-    go n | n <= 0 = ""
+    go n | n <= 0    = ""
          | otherwise = let r = ((n - 1) `mod` 26) + 1
                        in  toEnum (0x60 + r):go ((n - r) `div` 26)
 
