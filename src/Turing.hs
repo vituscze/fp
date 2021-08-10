@@ -1,5 +1,6 @@
 module Turing
     ( toTape
+    , toConfig
     , moveLeft
     , moveRight
     , writeTape
@@ -16,6 +17,9 @@ import Scott
 
 toTape :: Expr -> Maybe ([Int], Int, [Int])
 toTape = toTriple (toList toInt) toInt (toList toInt)
+
+toConfig :: Expr -> Maybe (Int, ([Int], Int, [Int]))
+toConfig = toPair toInt toTape
 
 moveLeft :: Expr
 moveLeft = "t" |-> "t" :. ("l x r" |-> "r" :. consCase :. nilCase)
