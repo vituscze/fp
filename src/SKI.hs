@@ -55,6 +55,8 @@ fromNamed = go
         | x `Set.notMember` free e = K :. go e
     go (_ N.:-> N.Var _)           = I
     go (x N.:-> y N.:-> e)         = go $ x N.:-> relax (go $ y N.:-> e)
+    go (x N.:-> e N.:. N.Var _)
+        | x `Set.notMember` free e = go e
     go (x N.:-> e1 N.:. e2)        = S :. go (x N.:-> e1) :. go (x N.:-> e2)
 
     relax (FV x)     = N.Var x
