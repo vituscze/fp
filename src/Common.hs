@@ -1,3 +1,4 @@
+-- | Commonly used lambda expressions
 module Common
     ( id'
     , k
@@ -24,8 +25,8 @@ k' = "x y" |-> "y"
 s :: Expr
 s = "x y z" |-> "x" :. "z" :. ("y" :. "z")
 
--- | > y = \f. (\x. f (x x)) (\x. f (x x))
+-- | The fixed-point combinator. Does not have a normal form.
 --
--- Does not have a normal form.
+-- > y = \f. (\x. f (x x)) (\x. f (x x))
 y :: Expr
 y = "f" |-> ("x" |-> "f" :. ("x" :. "x")) :. ("x" |-> "f" :. ("x" :. "x"))
