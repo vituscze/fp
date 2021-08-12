@@ -1,0 +1,2 @@
+# haddock does not like CRLF when generating hyperlinked source files
+*.hs text eol=lf
