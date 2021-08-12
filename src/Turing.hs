@@ -1,5 +1,6 @@
 module Turing
-    ( toTape
+    ( Tape
+    , toTape
     , toConfig
     , moveLeft
     , moveRight
@@ -15,10 +16,13 @@ import Expr
 import Reduce
 import Scott
 
-toTape :: Expr -> Maybe ([Int], Int, [Int])
+-- | Type of Turing machine tapes
+type Tape = ([Int], Int, [Int])
+
+toTape :: Expr -> Maybe Tape
 toTape = toTriple (toList toInt) toInt (toList toInt)
 
-toConfig :: Expr -> Maybe (Int, ([Int], Int, [Int]))
+toConfig :: Expr -> Maybe (Int, Tape)
 toConfig = toPair toInt toTape
 
 moveLeft :: Expr

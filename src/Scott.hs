@@ -1,3 +1,4 @@
+-- | This module provides various Scott-encoded data types.
 module Scott
     (
     -- * Natural numbers
@@ -20,6 +21,10 @@ import Common
 import Expr
 import Reduce
 
+-- | Converts a natural number into its Scott-encoded representation.
+--
+-- >>> nat 3
+-- (λa s z. s a) ((λa s z. s a) ((λa s z. s a) (λs z. z)))
 nat :: Int -> Expr
 nat 0 = zero
 nat n = suc :. nat (n - 1)
@@ -44,6 +49,11 @@ mul = y :. ("r a b" |-> "a" :. ("pa" |-> add :. "b" :. ("r" :. "pa" :. "b")) :. 
 pred' :: Expr
 pred' = "a" |-> "a" :. id' :. zero
 
+-- | Converts a Scott-encoded natural number back into its usual representation.
+-- If the expression does not encode a number, the function returns 'Nothing'.
+--
+-- >>> toInt (add :. nat 2 :. nat 3)
+-- Just 5
 toInt :: Expr -> Maybe Int
 toInt e = case normalForm (e :. "_suc" :. "_zero") of
     Var "_zero"     -> Just 0
@@ -58,9 +68,19 @@ nil = "c n" |-> "n"
 cons :: Expr
 cons = "a b c n" |-> "c" :. "a" :. "b"
 
+-- | Converts a list of expressions into its Scott-encoded representation.
+--
+-- >>> list [nat 0, nat 1]
+-- (λa b c n. c a b) (λs z. z) ((λa b c n. c a b) ((λa s z. s a) (λs z. z)) (λc n. n))
 list :: [Expr] -> Expr
 list = foldr (\e r -> cons :. e :. r) nil
 
+-- | Converts a Scott-encoded list back into its usual representation. Requires a conversion
+-- function for the elements of the list. If the expression does not encode a list or if
+-- the conversion function fails, the entire function returns 'Nothing'.
+--
+-- >>> toList toInt (cons :. nat 2 :. (cons :. nat 1 :. nil))
+-- Just [2,1]
 toList :: (Expr -> Maybe a) -> Expr -> Maybe [a]
 toList a = go
   where

@@ -104,7 +104,7 @@ renameUnsafe src tgt = go
     go (e1 :. e2)   = go e1 :. go e2
 
 -- | Renames all free occurences of the name with a fresh name. Returns the
--- fresh named and the renamed expression.
+-- fresh name and the renamed expression.
 rename :: (Fresh m) => Name -> Expr -> m (Name, Expr)
 rename src e = do
     tgt <- fresh
@@ -121,8 +121,8 @@ free (e1 :. e2) = free e1 `Set.union` free e2
 
 -- | @subst name what expr@ substitutes the expression @what@ for
 -- all free occurrences of the name @name@ in the expression @expr@,
--- automatically performing renaming of bound names in order to
--- avoid free variable capture.
+-- automatically renaming bound names in order to avoid free variable
+-- capture.
 --
 -- > evalState (subst "x" ("y" :. "y") ("x" :. "x")) 0 == ("y" :. "y") :. ("y" :. "y")
 subst :: (Fresh m) => Name -> Expr -> Expr -> m Expr

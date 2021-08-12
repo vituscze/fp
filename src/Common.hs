@@ -1,4 +1,4 @@
--- | Commonly used lambda expressions
+-- | This module provides commonly used lambda expressions.
 module Common
     ( id'
     , k
