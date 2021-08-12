@@ -9,24 +9,24 @@ module Common
 
 import Expr
 
--- | > id' = \x. x
+-- | > id' = λx. x
 id' :: Expr
 id' = "x" |-> "x"
 
--- | > k = \x y. x
+-- | > k = λx y. x
 k :: Expr
 k = "x y" |-> "x"
 
--- | > k' = \x y. y
+-- | > k' = λx y. y
 k' :: Expr
 k' = "x y" |-> "y"
 
--- | > s = \x y z. x z (y z)
+-- | > s = λx y z. x z (y z)
 s :: Expr
 s = "x y z" |-> "x" :. "z" :. ("y" :. "z")
 
 -- | The fixed-point combinator. Does not have a normal form.
 --
--- > y = \f. (\x. f (x x)) (\x. f (x x))
+-- > y = λf. (λx. f (x x)) (λx. f (x x))
 y :: Expr
 y = "f" |-> ("x" |-> "f" :. ("x" :. "x")) :. ("x" |-> "f" :. ("x" :. "x"))

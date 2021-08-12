@@ -24,23 +24,23 @@ nat :: Int -> Expr
 nat 0 = zero
 nat n = suc :. nat (n - 1)
 
--- | > zero = \s z. z
+-- | > zero = λs z. z
 zero :: Expr
 zero = "s z" |-> "z"
 
--- | > suc = \a s z. s a
+-- | > suc = λa s z. s a
 suc :: Expr
 suc = "a s z" |-> "s" :. "a"
 
--- | > add = y \r a b. a (\pa. suc (r pa b)) b
+-- | > add = y λr a b. a (λpa. suc (r pa b)) b
 add :: Expr
 add = y :. ("r a b" |-> "a" :. ("pa" |-> suc :. ("r" :. "pa" :. "b")) :. "b")
 
--- | > mul = y \r a b. a (\pa. add b (r pa b)) zero
+-- | > mul = y λr a b. a (λpa. add b (r pa b)) zero
 mul :: Expr
 mul = y :. ("r a b" |-> "a" :. ("pa" |-> add :. "b" :. ("r" :. "pa" :. "b")) :. zero)
 
--- | > pred' = \a. a id' zero
+-- | > pred' = λa. a id' zero
 pred' :: Expr
 pred' = "a" |-> "a" :. id' :. zero
 
@@ -50,11 +50,11 @@ toInt e = case normalForm (e :. "_suc" :. "_zero") of
     Var "_suc" :. n -> succ <$> toInt n
     _               -> Nothing
 
--- | > nil = \c n. n
+-- | > nil = λc n. n
 nil :: Expr
 nil = "c n" |-> "n"
 
--- | > cons = \a b c n. c a b
+-- | > cons = λa b c n. c a b
 cons :: Expr
 cons = "a b c n" |-> "c" :. "a" :. "b"
 

@@ -27,35 +27,35 @@ nat i = "f x" |-> go i
     go 0 = "x"
     go n = "f" :. go (n - 1)
 
--- | > zero = \f x. x
+-- | > zero = λf x. x
 zero :: Expr
 zero = "f x" |-> "x"
 
--- | > suc = \a f x. f (a f x)
+-- | > suc = λa f x. f (a f x)
 suc :: Expr
 suc = "a f x" |-> "f" :. ("a" :. "f" :. "x")
 
--- | > add = \a b. a suc b
+-- | > add = λa b. a suc b
 add :: Expr
 add = "a b" |-> "a" :. suc :. "b"
 
--- | > add' = \a b f x. a f (b f x)
+-- | > add' = λa b f x. a f (b f x)
 add' :: Expr
 add' = "a b f x" |-> "a" :. "f" :. ("b" :. "f" :. "x")
 
--- | > mul = \a b. a (add b) 0
+-- | > mul = λa b. a (add b) 0
 mul :: Expr
 mul = "a b" |-> "a" :. (add :. "b") :. zero
 
--- | > mul' = \a b f. a (b f)
+-- | > mul' = λa b f. a (b f)
 mul' :: Expr
 mul' = "a b f" |-> "a" :. ("b" :. "f")
 
--- | > exp = \a b. b (mul a) 1
+-- | > exp = λa b. b (mul a) 1
 exp :: Expr
 exp = "a b" |-> "b" :. (mul :. "a") :. (suc :. zero)
 
--- | > exp' = \a b. b a
+-- | > exp' = λa b. b a
 exp' :: Expr
 exp' = "a b" |-> "b" :. "a"
 
@@ -68,9 +68,9 @@ toInt e = go $ normalForm $ e :. "_suc" :. "_zero"
 
 -- |
 -- @
--- pred = \\a. snd' (a step base)
+-- pred = λa. snd' (a step base)
 --   where
---     step = \\p. pair true (fst' p suc id' (snd' p))
+--     step = λp. pair true (fst' p suc id' (snd' p))
 --     base = pair false 0
 -- @
 pred' :: Expr

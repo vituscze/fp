@@ -1,6 +1,7 @@
--- | Lambda expression parsing
+-- | This module provides lambda expression parsers.
 module Parse
-    ( parse
+    ( expr
+    , parse
     , parseUnsafe
     ) where
 
