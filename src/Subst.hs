@@ -124,7 +124,7 @@ free (e1 :. e2) = free e1 `Set.union` free e2
 -- automatically renaming bound names in order to avoid free variable
 -- capture.
 --
--- > evalState (subst "x" ("y" :. "y") ("x" :. "x")) 0 == ("y" :. "y") :. ("y" :. "y")
+-- > evalState (subst "x" ("y" :. "y") ("x" :. "x")) 0 == (("y" :. "y") :. ("y" :. "y"))
 subst :: (Fresh m) => Name -> Expr -> Expr -> m Expr
 subst x e = go
   where

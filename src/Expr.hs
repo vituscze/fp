@@ -9,16 +9,17 @@ import Control.DeepSeq
 import qualified Data.List as List
 import Data.String
 
+-- | Type of variable names
 type Name = String
 
 infixr 1 :->
 infixr 1 |->
 infixl 9 :.
 
--- | Standard encoding of lambda expressions. Variables and abstractions
+-- | Standard representation of lambda expressions. Variables and abstractions
 -- have explicit names.
 --
--- > λx y. y x == "x" :-> "y" :-> Var "y" :. Var "x"
+-- > (λx y. y x) == ("x" :-> "y" :-> Var "y" :. Var "x")
 data Expr
     = Var Name       -- ^ Variable
     | Name :-> Expr  -- ^ Abstraction
@@ -61,6 +62,6 @@ instance IsString Expr where
 -- | Helper function for creating abstraction telescopes.
 -- Each bound name must be separated by whitespace.
 --
--- > "x y" |-> Var "x" == "x" :-> "y" :-> Var "x"
+-- > ("x y" |-> Var "x") == ("x" :-> "y" :-> Var "x")
 (|->) :: String -> Expr -> Expr
 s |-> e = foldr (:->) e $ words s

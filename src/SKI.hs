@@ -1,3 +1,15 @@
+-- | This module provides SKI combinator representation of lambda expressions.
+--
+-- In broad terms, a combinator is a (typically higher-order) function that
+-- contains no free variables. More specifically, these functions do not
+-- use abstraction and are simply defined as an application of their arguments
+-- in some order.
+--
+-- The combinators used in this module are:
+--
+-- * @S@, defined as @S x y z = x z (y z)@
+-- * @K@, defined as @K x y = x@
+-- * @I@, defined as @I x = x@
 module SKI
     ( Expr(..)
     , fromNamed
@@ -15,6 +27,10 @@ import Subst
 
 infixl 9 :.
 
+-- | SKI combinator representation of lambda expressions. Free variables are provided for
+-- convenience but are not strictly necessary.
+--
+-- > (λx y. y x) == S :. (K :. (S :. I)) :. K
 data Expr
     = FV Name
     | S
@@ -42,9 +58,17 @@ instance Show Expr where
             . go 11 e2
             )
 
+-- | Transforms a standard (named) representation of a given lambda expression into
+-- its SKI combinator representation.
+--
+-- > ("x" |-> "x") == I
 fromNamed :: N.Expr -> Expr
 fromNamed = go
   where
+    -- Ideally, the helper function would use an intermediate data type that
+    -- contains SKI combinators and also abstraction. For simplicity, we reuse
+    -- the standard representation and use special variable names for the
+    -- combinators.
     go (N.Var "_S") = S
     go (N.Var "_K") = K
     go (N.Var "_I") = I
@@ -65,6 +89,11 @@ fromNamed = go
     relax I          = N.Var "_I"
     relax (e1 :. e2) = relax e1 N.:. relax e2
 
+-- | Transforms a SKI combinator representation of a given lambda expression into
+-- its standard representation.
+--
+-- >>> toNamed I
+-- λx. x
 toNamed :: Expr -> N.Expr
 toNamed (FV x)     = N.Var x
 toNamed S          = s
@@ -72,6 +101,11 @@ toNamed K          = k
 toNamed I          = id'
 toNamed (e1 :. e2) = toNamed e1 N.:. toNamed e2
 
+-- | Attempts to reduce an expression to a normal form by (lazily) applying
+-- the combinator definitions.
+--
+-- >>> normalForm (S :. S :. K :. I :. K)
+-- K I
 normalForm :: Expr -> Expr
 normalForm (e1 :. e2) = normalForm e1 `app` normalForm e2
   where
