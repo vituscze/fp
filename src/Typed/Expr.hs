@@ -106,9 +106,9 @@ instance IsString Type where
 data Scheme = Scheme Int Type
 
 instance Show Scheme where
-    showsPrec p (Scheme i t) = showParen (p > 0)
-        ( showString "∀"
-        . foldr (.) id (List.intersperse (showString " ") $ map tyGenShow [0 .. i - 1])
-        . showString ". "
-        . shows t
-        )
+    showsPrec p (Scheme i t) = showParen (p > 0) (prenex i . shows t)
+      where
+        prenex 0 = id
+        prenex n = showString "∀"
+                 . foldr (.) id (List.intersperse (showString " ") $ map tyGenShow [0 .. n - 1])
+                 . showString ". "
