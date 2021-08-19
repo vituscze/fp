@@ -12,6 +12,7 @@ import Control.Applicative
 import Control.Monad.State
 
 import Expr
+import Fresh
 import Subst
 
 -- | Class constraint for computations capable of performing reduction.

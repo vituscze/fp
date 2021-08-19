@@ -12,7 +12,7 @@ import Data.Map ((!))
 import Data.Set qualified as Set
 import Data.Set ((\\))
 
-import Subst (Fresh, fresh)
+import Fresh
 import Typed.Expr
 import Typed.Free
 import Typed.Subst
@@ -48,8 +48,8 @@ algorithmW :: (Fresh m, MonadError TypeError m)
            -> Expr
            -> m (Subst, Type)
 algorithmW ctx (Var x) = case find x ctx of
-    Nothing    -> throwError UnknownVariable
-    Just genTy -> (,) empty <$> instantiate genTy
+    Nothing -> throwError UndefinedVariable
+    Just t  -> (,) empty <$> instantiate t
 algorithmW ctx (x :-> e) = do
     new <- freshTy
     (s, t) <- algorithmW (extend x (Scheme 0 new) ctx) e

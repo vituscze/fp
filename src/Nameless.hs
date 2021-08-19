@@ -20,7 +20,7 @@ import Data.Map ((!))
 
 import Expr qualified as N
 import Expr (Name)
-import Subst qualified as S
+import Fresh
 
 infixl 9 :.
 
@@ -89,7 +89,7 @@ toNamed = (`evalState` 1) . go 0 Map.empty
     go d m (BV i) = pure $ N.Var $ m ! (d - i)
     go _ _ (FV x) = pure $ N.Var x
     go d m (Lam e) = do
-        v <- S.fresh
+        v <- fresh
         (v N.:->) <$> go (d + 1) (Map.insert (d + 1) v m) e
     go d m (e1 :. e2) = (N.:.) <$> go d m e1 <*> go d m e2
 

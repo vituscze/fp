@@ -1,5 +1,6 @@
 module Untyped
     ( module Expr
+    , module Fresh
     , module Subst
     , module Reduce
     , module Parse
@@ -10,6 +11,7 @@ module Untyped
     ) where
 
 import Expr
+import Fresh
 import Subst
 import Reduce
 import Parse
