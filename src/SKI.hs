@@ -48,13 +48,13 @@ instance NFData Expr where
 instance Show Expr where
     showsPrec = go
       where
-        go _ (FV x)     = (x ++)
-        go _ S          = ("S" ++)
-        go _ K          = ("K" ++)
-        go _ I          = ("I" ++)
+        go _ (FV x)     = showString x
+        go _ S          = showString "S"
+        go _ K          = showString "K"
+        go _ I          = showString "I"
         go p (e1 :. e2) = showParen (p > 10)
             ( go 10 e1
-            . (" " ++)
+            . showString " "
             . go 11 e2
             )
 

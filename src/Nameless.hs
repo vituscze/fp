@@ -45,15 +45,15 @@ instance NFData Expr where
 instance Show Expr where
     showsPrec = go
       where
-        go _ (BV i)     = (show i ++)
-        go _ (FV x)     = (x ++)
+        go _ (BV i)     = shows i
+        go _ (FV x)     = showString x
         go p (Lam e)    = showParen (p > 0)
-            ( ("λ " ++)
+            ( showString "λ "
             . go 0 e
             )
         go p (e1 :. e2) = showParen (p > 10)
             ( go 10 e1
-            . (" " ++)
+            . showString " "
             . go 11 e2
             )
 

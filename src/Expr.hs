@@ -39,18 +39,18 @@ instance Show Expr where
         tele (x :-> e) = (x :) <$> tele e
         tele e         = (e, [])
 
-        go _ (Var x)     = (x ++)
+        go _ (Var x)     = showString x
         go p a@(_ :-> _) = showParen (p > 0)
-            ( ("λ" ++)
-            . foldr (.) id (List.intersperse (" " ++) $ map (++) vs)
-            . (". " ++)
+            ( showString "λ"
+            . foldr (.) id (List.intersperse (showString " ") $ map showString vs)
+            . showString ". "
             . go 0 b
             )
           where
             (b, vs) = tele a
         go p (e1 :. e2)  = showParen (p > 10)
             ( go 10 e1
-            . (" " ++)
+            . showString " "
             . go 11 e2
             )
 
