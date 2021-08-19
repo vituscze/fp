@@ -34,7 +34,14 @@ library
                       Turing.BusyBeaver3,
                       Nameless,
                       HOAS,
-                      SKI
+                      SKI,
+                      Typed,
+                      Typed.Expr,
+                      Typed.Support,
+                      Typed.Free,
+                      Typed.Subst,
+                      Typed.Unify,
+                      Typed.Infer
 
     -- Modules included in this library but not exported.
     -- other-modules:
