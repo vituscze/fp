@@ -8,9 +8,9 @@ module Turing.BusyBeaver2
 
 import Common (k)
 import Encoding
+import Encoding.Scott
 import Expr
 import Reduce
-import Scott
 import Turing
 
 -- | The initial configuration

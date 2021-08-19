@@ -14,9 +14,9 @@ module Turing
 
 import Common
 import Encoding
+import Encoding.Scott
 import Expr
 import Reduce
-import Scott
 
 -- | Type of Turing machine tapes. A tape is represented as a triple containing:
 --

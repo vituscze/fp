@@ -1,5 +1,5 @@
 -- | This module provides various Church-encoded data types.
-module Church
+module Encoding.Church
     (
     -- * Natural numbers
       nat

@@ -1,5 +1,5 @@
 -- | This module provides various Scott-encoded data types.
-module Scott
+module Encoding.Scott
     (
     -- * Natural numbers
       nat

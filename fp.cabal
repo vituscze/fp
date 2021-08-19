@@ -20,14 +20,15 @@ maintainer:         vituscze@gmail.com
 extra-source-files: CHANGELOG.md
 
 library
-    exposed-modules:  Expr,
+    exposed-modules:  Untyped,
+                      Expr,
                       Subst,
                       Reduce,
                       Parse,
                       Common,
                       Encoding,
-                      Church,
-                      Scott,
+                      Encoding.Church,
+                      Encoding.Scott,
                       Turing,
                       Turing.BusyBeaver2,
                       Turing.BusyBeaver3,

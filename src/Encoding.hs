@@ -1,7 +1,7 @@
 -- | This module provides various encoded data types.
 --
 -- The Church and Scott encoding coincides for the data types given here,
--- see "Church" and "Scott" for data types where it does not.
+-- see "Encoding.Church" and "Encoding.Scott" for data types where it does not.
 module Encoding
     (
     -- * Booleans
