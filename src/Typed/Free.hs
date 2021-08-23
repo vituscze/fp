@@ -1,3 +1,4 @@
+-- | This module provides tools to collect free (type) variables of types, type schemes or type contexts.
 module Typed.Free
     ( Free(..)
     ) where
@@ -8,7 +9,9 @@ import Data.Set (Set)
 import Typed.Expr
 import Typed.Support
 
+-- | Minimal complete definition: 'free'
 class Free t where
+    -- | Extracts the set of free variables from a given expression.
     free :: t -> Set Name
 
 instance Free Type where

@@ -1,3 +1,4 @@
+-- | A convenience module which exports the core modules dealing with the untyped lambda calculus.
 module Untyped
     ( module Expr
     , module Fresh

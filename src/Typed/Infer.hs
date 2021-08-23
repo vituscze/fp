@@ -1,8 +1,10 @@
+-- | This module provides a definition of the algorithm W, a type inference
+-- algorithm for the Hindley-Milner system.
 module Typed.Infer
-    ( runInfer
-    , instantiate
+    ( instantiate
     , quantify
     , algorithmW
+    , principal
     ) where
 
 import Control.Monad.Except
@@ -19,12 +21,15 @@ import Typed.Subst
 import Typed.Support
 import Typed.Unify
 
-runInfer :: (forall m. (Fresh m, MonadError TypeError m) => m a) -> Either TypeError a
-runInfer = (`evalStateT` 1)
-
+-- | Generates a fresh type variable.
 freshTy :: (Fresh m) => m Type
 freshTy = TyVar <$> fresh
 
+-- | Instantiates a type scheme by replacing all bound variables with
+-- fresh free variables.
+--
+-- >>> evalState (instantiate (Scheme 2 (TyGen 0 :->: TyGen 1))) 1
+-- `a → `b
 instantiate :: (Fresh m) => Scheme -> m Type
 instantiate (Scheme n t) = do
     new <- replicateM n freshTy
@@ -37,15 +42,28 @@ instantiate (Scheme n t) = do
 
     pure $ go t
 
+-- | Quantifies all free type variables of a type that are not free
+-- in the typing context.
+--
+-- >>> quantify nil ("a" :->: "b")
+-- ∀t0 t1. t0 → t1
 quantify :: TypeContext -> Type -> Scheme
 quantify ctx t = Scheme (Set.size vars) (apply sub t)
   where
     vars = free t \\ free ctx
     sub  = Map.fromList $ zip (Set.toList vars) (map TyGen [0 ..])
 
+-- | The core type inference algorithm. Given a typing context @ctx@ and a lambda
+-- term @e@, it produces either a pair @(s, t)@ where @s@ is a substitution and
+-- @t@ is a type, such that:
+--
+-- > apply s ctx |- e : t
+--
+-- That is: term @e@ has a type @t@ in the typing context @apply s ctx@. If no such
+-- pair @(s, t)@ exists, the result is a 'TypeError'.
 algorithmW :: (Fresh m, MonadError TypeError m)
            => TypeContext
-           -> Expr
+           -> Term
            -> m (Subst, Type)
 algorithmW ctx (Var x) = case find x ctx of
     Nothing -> throwError UndefinedVariable
@@ -65,3 +83,20 @@ algorithmW ctx (Let (x, e1) e2) = do
     let ctx' = apply s1 ctx
     (s2, t2) <- algorithmW (extend x (quantify ctx' t1) ctx') e2
     pure (s2 @@ s1, t2)
+
+-- | Finds the principal type of a given term, if it exists.
+--
+-- >>> principal nil ("x" |-> "x")
+-- Right (∀t0. t0 → t0)
+--
+-- >>> principal nil ("x y z" |-> "x" :. "z" :. ("y" :. "z"))
+-- Right (∀t0 t1 t2. (t0 → t2 → t1) → (t0 → t2) → t0 → t1)
+--
+-- >>> principal nil ("x" |-> "x" :. "x")
+-- Left OccursCheck
+principal :: TypeContext
+          -> Term
+          -> Either TypeError Scheme
+principal ctx e = (`evalStateT` 1) $ do
+    (s, t) <- algorithmW ctx e
+    pure $ quantify (apply s ctx) t

@@ -1,10 +1,14 @@
+-- | This module provides standard representation of expressions in the
+-- Hindley-Milner system.
+--
+-- Expressions can be broken down into two main categories: value-level expressions
+-- called terms, and type-level expression called types (and type schemes).
 module Typed.Expr
     (
     -- * Terms
       Name
-    , Expr(..)
+    , Term(..)
     , (|->)
-    , (.=)
 
     -- * Types
     , Type(..)
@@ -18,25 +22,25 @@ import Data.String
 
 import Expr (Name)
 
-infix  0 .=
 infixr 1 :->
 infixr 1 :->:
 infixr 1 |->
 infixl 9 :.
 
-data Expr
+-- | Standard representation of Hindley-Milner terms. Just like 'Expr.Expr' but with
+-- an additional construct: the let-in term.
+--
+-- > (let f = λx. x in f f) == Let ("f", "x" :-> Var "x") (Var "f" :. Var "f")
+data Term
     = Var Name               -- ^ Variable
-    | Name :-> Expr          -- ^ Abstraction
-    | Expr :. Expr           -- ^ Application
-    | Let (Name, Expr) Expr  -- ^ Local definition
+    | Name :-> Term          -- ^ Abstraction
+    | Term :. Term           -- ^ Application
+    | Let (Name, Term) Term  -- ^ Local definition
 
-(.=) :: Name -> Expr -> (Name, Expr)
-(.=) = (,)
-
-instance Show Expr where
+instance Show Term where
     showsPrec = go
       where
-        -- Extracts the telescope from a lambda expression.
+        -- Extracts the telescope from a HM term.
         --
         -- Returns a list of bound names and the abstraction body.
         tele (x :-> e) = (x :) <$> tele e
@@ -67,16 +71,19 @@ instance Show Expr where
 
 -- This instance, together with OverloadedStrings,
 -- allows us to write @"x"@ as a shortcut for @Var "x"@.
-instance IsString Expr where
+instance IsString Term where
     fromString = Var
 
 -- | Helper function for creating abstraction telescopes.
 -- Each bound name must be separated by whitespace.
 --
 -- > ("x y" |-> Var "x") == ("x" :-> "y" :-> Var "x")
-(|->) :: String -> Expr -> Expr
+(|->) :: String -> Term -> Term
 s |-> e = foldr (:->) e $ words s
 
+-- | Standard representation of Hindley-Milner (mono)types.
+--
+-- > (a → b) == (TyVar "a" :->: TyVar "b")
 data Type
     = TyVar Name      -- ^ Free type variables
     | TyGen Int       -- ^ Bound type variables
@@ -103,6 +110,14 @@ instance Show Type where
 instance IsString Type where
     fromString = TyVar
 
+-- | A representation of Hindley-Milner type schemes (polytypes). Instead of
+-- quantifying variables explicitly by their name, we only specify how many
+-- quantified variables occur in the type.
+--
+-- If the scheme quantifies over @n@ variables, the inner type can refer to
+-- these variables by using @TyGen i@ where @0 <= i < n@.
+--
+-- > (∀a. a → b) == Scheme 1 (TyGen 0 :->: TyVar "b")
 data Scheme = Scheme Int Type
 
 instance Show Scheme where

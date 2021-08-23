@@ -1,3 +1,4 @@
+-- | A convenience module which exports the core modules dealing with the typed lambda calculus.
 module Typed
     ( module Typed.Expr
     , module Typed.Support
