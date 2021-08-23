@@ -54,7 +54,7 @@ quantify ctx t = Scheme (Set.size vars) (apply sub t)
     sub  = Map.fromList $ zip (Set.toList vars) (map TyGen [0 ..])
 
 -- | The core type inference algorithm. Given a typing context @ctx@ and a lambda
--- term @e@, it produces either a pair @(s, t)@ where @s@ is a substitution and
+-- term @e@, it produces a pair @(s, t)@ where @s@ is a substitution and
 -- @t@ is a type, such that:
 --
 -- > apply s ctx |- e : t
