@@ -2,7 +2,7 @@
 
 **Lecture: Thursday 10:40 in S4**
 
-This code contains the accompanying code that will be discussed during the lectures. The package doesn't contain an executable; it is primarily meant to be used in a REPL environment.
+This repository contains the accompanying code that will be discussed during the lectures. The package doesn't contain an executable; it is primarily meant to be used in a REPL environment.
 
 To start out, run:
 
