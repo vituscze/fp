@@ -41,7 +41,7 @@ singleton = Map.singleton
 -- >>> singleton "y" ("z" :->: "z") @@ singleton "x" ("y" :->: "y")
 -- fromList [("x",(z → z) → z → z),("y",z → z)]
 (@@) :: Subst -> Subst -> Subst
-s @@ t = (apply s `Map.map` t) `Map.union` s
+s @@ t = Map.map (apply s) t `Map.union` s
 
 -- | Minimal complete definition: 'apply'
 class Apply t where
