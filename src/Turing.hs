@@ -70,7 +70,7 @@ moveRight = "t" |-> "t" :. ("l x r" |-> "l" :. consCase :. nilCase)
     consCase = "a b" |-> triple :. "b" :.   "a" :. (cons :. "x" :. "r")
     nilCase  =           triple :. nil :. nat 0 :. (cons :. "x" :. "r")
 
--- | Replaces the symbol under the head with a givevn symbol.
+-- | Replaces the symbol under the head with a given symbol.
 --
 -- >>> toTape (writeTape :. nat 1 :. (triple :. nil :. nat 0 :. nil))
 -- Just ([],1,[])

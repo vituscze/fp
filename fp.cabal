@@ -33,6 +33,7 @@ library
                       Turing,
                       Turing.BusyBeaver2,
                       Turing.BusyBeaver3,
+                      Turing.BusyBeaver4,
                       Nameless,
                       HOAS,
                       SKI,
