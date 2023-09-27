@@ -25,7 +25,7 @@ The package is also fully documented. You can generate the documentation by runn
 
 ## Programming Tools
 
-* [Haskell Platform](https://www.haskell.org/platform/) (compiler, package managers, etc)
+* [GHCup](https://www.haskell.org/ghcup/) (compiler, package managers, etc)
 * [Visual Studio Code](https://code.visualstudio.com/) (editor)
 * [Haskell plugin](https://marketplace.visualstudio.com/items?itemName=haskell.haskell) (VS Code plugin)
 * [Simple Haskell plugin](https://marketplace.visualstudio.com/items?itemName=dramforever.vscode-ghc-simple) (another VS Code plugin, in case the previous one doesn't work)
