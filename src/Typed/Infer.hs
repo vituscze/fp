@@ -7,6 +7,7 @@ module Typed.Infer
     , principal
     ) where
 
+import Control.Monad
 import Control.Monad.Except
 import Control.Monad.State
 import Data.Map qualified as Map

@@ -9,6 +9,7 @@ module Reduce
     ) where
 
 import Control.Applicative
+import Control.Monad
 import Control.Monad.State
 
 import Expr
