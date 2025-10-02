@@ -1,6 +1,6 @@
 # Functional Programming (NAIL097)
 
-**Lecture: Wednesday 12:20 in S9**
+**Lecture: Thursday 15:40 in S1**
 
 This repository contains the accompanying code that will be discussed during the lectures. The package doesn't contain an executable; it is primarily meant to be used in a REPL environment.
 
